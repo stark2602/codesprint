@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 50px;
+    }
+
+    #searchForm {
+      margin-top: 20px;
+    }
+
+    #result {
+      margin-top: 20px;
+    }
+
+    #error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Weather App</h1>
+  <form id="searchForm">
+    <input type="text" id="cityInput" placeholder="Enter city name" />
+    <button type="submit">Get Weather</button>
+  </form>
+  <div id="result"></div>
+  <div id="error"></div>
+
+  <script>
+    document.getElementById('searchForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      var city = document.getElementById('cityInput').value;
+      getWeather(city);
+    });
+
+    function getWeather(city) {
+      var url = 'https://api.weatherapi.com/v1/current.json?key=aa3582e2fa8f45089b595118230107&q=' + city;
+
+      fetch(url)
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error('City not found');
+          }
+          return response.json();
+        })
+        .then(function (data) {
+          displayWeather(data);
+        })
+        .catch(function (error) {
+          displayError(error);
+        });
+    }
+
+    function displayWeather(data) {
+      var resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '';
+
+      var cityName = data.location.name;
+      var temperature = data.current.temp_c;
+      var condition = data.current.condition.text;
+
+      var cityHeading = document.createElement('h2');
+      cityHeading.textContent = cityName;
+
+      var temperaturePara = document.createElement('p');
+      temperaturePara.textContent = 'Temperature: ' + temperature + '°C';
+
+      var conditionPara = document.createElement('p');
+      conditionPara.textContent = 'Condition: ' + condition;
+
+      resultDiv.appendChild(cityHeading);
+      resultDiv.appendChild(temperaturePara);
+      resultDiv.appendChild(conditionPara);
+
+      document.getElementById('error').textContent = '';
+    }
+
+    function displayError(error) {
+      var errorDiv = document.getElementById('error');
+      errorDiv.textContent = error.message;
+      document.getElementById('result').innerHTML = '';
+    }
+  </script>
+</body>
+</html>
