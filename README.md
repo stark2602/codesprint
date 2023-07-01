@@ -1,4 +1,4 @@
 # codesprint
 
 
-calculator->script.js -> stylr.css
+calculator->script.js -> style.css
