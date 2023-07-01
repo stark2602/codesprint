@@ -1,1 +1,40 @@
 
+import requests
+
+def get_definition(word):
+  url = "https://api.dictionaryapi.dev/api/v2/entries/en/" + word
+  response = requests.get(url)
+  if response.status_code == 200:
+    data = response.json()
+    return data[0]
+  else:
+    return None
+
+def main():
+  word = input("Enter a word: ")
+  definition = get_definition(word)
+  if definition:
+    print("Word:", definition["word"])
+    print("Meaning:", definition["meanings"][0]["definitions"][0]["definition"])
+    if "origin" in definition:
+        print("Origin:", definition["origin"])
+    else:
+        print("No origin found for", word)
+    if "firstUse" in definition["meanings"][0]["definitions"][0]:
+        print("First use:", definition["meanings"][0]["definitions"][0]["firstUse"])
+    else:
+        print("No first use found for", word)
+    if "synonyms" in definition["meanings"][0]["definitions"][0]:
+        print("Synonyms:", ",".join(definition["meanings"][0]["definitions"][0]["synonyms"]))
+    else:
+        print("No synonyms found for", word)
+    if "antonyms" in definition["meanings"][0]["definitions"][0]:
+        print("Antonyms:", ",".join(definition["meanings"][0]["definitions"][0]["antonyms"]))
+    else:
+        print("No antonyms found for", word)
+    print("Part of speech:", definition["meanings"][0]["partOfSpeech"])
+  else:
+    print("No definition found for", word)
+
+if __name__ == "__main__":
+  main()
